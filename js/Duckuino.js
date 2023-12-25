@@ -1,76 +1,76 @@
 var commandMap = {
-  ESCAPE:'KEY_ESC',
+  ESCAPE:'ESC',
   MENU:'229',
-  ESC:'KEY_LEFT_ESC',
-  END:'KEY_END',
-  SPACE:'\' \'',
-  TAB:'KEY_TAB',
+  ESC:'LEFT_ESC',
+  END:'END',
+  SPACE:'SPACE',
+  TAB:'TAB',
   PRINTSCREEN:'206',
-  ENTER:'KEY_ENTER',
-  UPARROW:'KEY_UP_ARROW',
-  DOWNARROW:'KEY_DOWN_ARROW',
-  LEFTARROW:'KEY_LEFT_ARROW',
-  RIGHTARROW:'KEY_RIGHT_ARROW',
-  UP:'KEY_UP_ARROW',
-  DOWN:'KEY_DOWN_ARROW',
-  LEFT:'KEY_LEFT_ARROW',
-  RIGHT:'KEY_RIGHT_ARROW',
-  PAGEUP:'KEY_PAGE_UP',
-  PAGEDOWN:'KEY_PAGE_DOWN',
-  CAPSLOCK:'KEY_CAPS_LOCK',
-  DELETE:'KEY_DELETE',
-  DEL:'KEY_DELETE',
-  F1:'KEY_F1',
-  F2:'KEY_F2',
-  F3:'KEY_F3',
-  F4:'KEY_F4',
-  F5:'KEY_F5',
-  F6:'KEY_F6',
-  F7:'KEY_F7',
-  F8:'KEY_F8',
-  F9:'KEY_F9',
-  F10:'KEY_F10',
-  F11:'KEY_F11',
-  F12:'KEY_F12'
+  ENTER:'ENTER',
+  UPARROW:'UP_ARROW',
+  DOWNARROW:'DOWN_ARROW',
+  LEFTARROW:'LEFT_ARROW',
+  RIGHTARROW:'RIGHT_ARROW',
+  UP:'UP_ARROW',
+  DOWN:'DOWN_ARROW',
+  LEFT:'LEFT_ARROW',
+  RIGHT:'RIGHT_ARROW',
+  PAGEUP:'PAGE_UP',
+  PAGEDOWN:'PAGE_DOWN',
+  CAPSLOCK:'CAPS_LOCK',
+  DELETE:'DELETE',
+  DEL:'DELETE',
+  F1:'F1',
+  F2:'F2',
+  F3:'F3',
+  F4:'F4',
+  F5:'F5',
+  F6:'F6',
+  F7:'F7',
+  F8:'F8',
+  F9:'F9',
+  F10:'F10',
+  F11:'F11',
+  F12:'F12'
 };
 
 var comboMap = {
-  ALT:'KEY_LEFT_ALT',
-  GUI:'KEY_LEFT_GUI',
-  WINDOWS:'KEY_LEFT_GUI',
-  COMMAND:'KEY_LEFT_GUI',
-  CTRL:'KEY_LEFT_CTRL',
-  CONTROL:'KEY_LEFT_CTRL',
-  SHIFT:'KEY_LEFT_SHIFT'
+  ALT:'LEFT_ALT',
+  GUI:'LEFT_GUI',
+  WINDOWS:'LEFT_GUI',
+  COMMAND:'LEFT_GUI',
+  CTRL:'LEFT_CTRL',
+  CONTROL:'LEFT_CTRL',
+  SHIFT:'LEFT_SHIFT'
 };
 
 var keyMap = {
-  a:'97',
-  b:'98',
-  c:'99',
-  d:'100',
-  e:'101',
-  f:'102',
-  g:'103',
-  h:'104',
-  i:'105',
-  j:'106',
-  k:'107',
-  l:'108',
-  m:'109',
-  n:'110',
-  o:'111',
-  p:'112',
-  q:'113',
-  r:'114',
-  s:'115',
-  t:'116',
-  u:'117',
-  v:'118',
-  w:'119',
-  x:'120',
-  y:'121',
-  z:'122'
+  a:'a',
+  b:'b',
+  c:'c',
+  d:'d',
+  e:'e',
+  f:'f',
+  g:'g',
+  h:'h',
+  i:'i',
+  j:'j',
+  k:'k',
+  l:'l',
+  m:'m',
+  n:'n',
+  o:'o',
+  p:'p',
+  q:'q',
+  r:'r',
+  s:'s',
+  t:'t',
+  u:'u',
+  v:'v',
+  w:'w',
+  x:'x',
+  y:'y',
+  z:'z'
 };
 
 class Duckuino {
@@ -95,30 +95,7 @@ class Duckuino {
     } 
 
     // Build the Arduino code skeleton
-    return '#include <HID-Project.h>\n'
-    + '#include <HID-Settings.h>\n\n'
-    + '// Utility function\n'
-    + 'void typeKey(int key){\n'
-    + '  Keyboard.press(key);\n'
-    + '  delay(50);\n'
-    + '  Keyboard.release(key);\n'
-    + '}\n\n'
-    + 'void setup()\n'
-    + '{\n'
-    + '  // Start Keyboard and Mouse\n'
-    + '  AbsoluteMouse.begin();\n'
-    + '  Keyboard.begin();\n\n'
-    + '  // Start Payload\n'
-    + parsedDucky
-    + '\n'
-    + '  // End Payload\n\n'
-    + '  // Stop Keyboard and Mouse\n'
-    + '  Keyboard.end();\n'
-    + '  AbsoluteMouse.end();\n'
-    + '}\n'
-    + '\n'
-    + '// Unused\n'
-    + 'void loop() {}';
+    return parsedDucky
   }
 
   // The parsing function
@@ -173,7 +150,7 @@ class Duckuino {
           textString = textString.split('\\').join('\\\\').split('"').join('\\"');
           if (textString !== '')
           {
-            parsedOut += '  Keyboard.print("' + textString + '");\n';
+            parsedOut += '  type("' + textString + '");\n';
             commandKnown = true;
           } else {
             console.error('Error: at line: ' + (i + 1) + ', STRING needs a text');
@@ -209,7 +186,7 @@ class Duckuino {
           {
             commandKnown = true;
             // Replace the DuckyScript key by the Arduino key name
-            parsedOut += '  typeKey(' + keyMap[wordArray[0]] + ');\n';
+            parsedOut += '  type(' + keyMap[wordArray[0]] + ');\n';
           } else {
             console.error('Error: Unknown letter \'' + wordArray[0] +'\' at line: ' + (i + 1));
             return;
@@ -233,7 +210,7 @@ class Duckuino {
           if (wordArray[0] != undefined && wordArray[0] != ''){
             commandKnown = true;
             var mouseParams = wordArray[0].split(',');
-            parsedOut += '  AbsoluteMouse.move('+mouseParams[0]+', '+mouseParams[1];
+            parsedOut += '  mousemove('+mouseParams[0]+', '+mouseParams[1];
 
             if(mouseParams[2] != undefined && mouseParams[2] != ''){
               parsedOut += ', '+mouseParams[2];
@@ -307,11 +284,11 @@ class Duckuino {
             {
               commandKnown = true;
 
-              parsedOut += '  typeKey(' + comboMap[wordArray[0]] + ');\n';
+              parsedOut += '  press(' + comboMap[wordArray[0]] + ');\n';
             }else if (commandMap[wordArray[0]] !== undefined) {
               commandKnown = true;
 
-              parsedOut += '  typeKey(' + commandMap[wordArray[0]] + ');\n';
+              parsedOut += '  press(' + commandMap[wordArray[0]] + ');\n';
             }else {
               commandKnown = false;
               break;
@@ -324,17 +301,17 @@ class Duckuino {
               commandKnown = true;
               releaseAll = true;
 
-              parsedOut += '  Keyboard.press(' + comboMap[wordArray[0]] + ');\n';
+              parsedOut += '  press(' + comboMap[wordArray[0]];
             }else if (commandMap[wordArray[0]] !== undefined) {
               commandKnown = true;
               releaseAll = true;
 
-              parsedOut += '  Keyboard.press(' + commandMap[wordArray[0]] + ');\n';
+              parsedOut += ' ' + commandMap[wordArray[0]];
             }else if (keyMap[wordArray[0]] !== undefined) {
               commandKnown = true;
               releaseAll = true;
 
-              parsedOut += '  Keyboard.press(' + keyMap[wordArray[0]] + ');\n';
+              parsedOut += ' ' + keyMap[wordArray[0]];
             }else {
               commandKnown = false;
               break;
@@ -351,7 +328,7 @@ class Duckuino {
 
       // If we need to release keys, we do
       if (releaseAll)
-        parsedOut += '  Keyboard.releaseAll();\n';
+        parsedOut += ');\n';
 
       parsedScript += parsedOut; // Add what we parsed
       if (i != (lineArray.length - 1))
